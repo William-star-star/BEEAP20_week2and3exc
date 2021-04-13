@@ -12,7 +12,7 @@ from matplotlib.figure import Figure
 class App:
     def __init__(self, root):
         # setting title
-        root.title("exercise")
+        root.title("BEEAP20 ex2and3") #shows the name of the title bar
         # setting window size
         width = 600
         height = 500
@@ -23,13 +23,14 @@ class App:
         root.geometry(alignstr)
         root.resizable(width=False, height=False)
 
+# shows the label name for loading csv file
         self.__GButton_450 = tk.Button(root)
-        self.__GButton_450["bg"] = "#efefef"
+        self.__GButton_450["bg"] = "red"
         ft = tkFont.Font(family='Times', size=10)
         self.__GButton_450["font"] = ft
         self.__GButton_450["fg"] = "#000000"
         self.__GButton_450["justify"] = "center"
-        self.__GButton_450["text"] = "Button"
+        self.__GButton_450["text"] = "Load csv file"
         self.__GButton_450.place(x=70, y=50, width=70, height=25)
         self.__GButton_450["command"] = self.__GButton_450_command
 
@@ -42,9 +43,10 @@ class App:
         self.__GLabel_544["font"] = ft
         self.__GLabel_544["fg"] = "#333333"
         self.__GLabel_544["justify"] = "center"
-        self.__GLabel_544["text"] = "label"
+        self.__GLabel_544["text"] = "csv file name"
         self.__GLabel_544.place(x=150, y=50, width=70, height=25)
-
+        
+      
         # these canvases are broken, fix them
         self.__GLineEdit_517 = tk.Canvas(root)
         self.__GLineEdit_517.place(x=50, y=130, width=234, height=140)
@@ -57,10 +59,14 @@ class App:
 
         self.__GLineEdit_700 = tk.Canvas(root)
         self.__GLineEdit_700.place(x=310, y=290, width=234, height=158)
-
+        
+       
     def __GButton_450_command(self):
+       
         filePath = fd.askopenfilename(initialdir='.')
+        
         try:
+           
             self.__df = pd.read_csv(filePath)
             self.__df = self.__df.dropna()
             self.__GListBox_563['values'] = list(self.__df['COMMUNITY AREA NAME'].unique())
