@@ -58,7 +58,7 @@ class App:
         
         # these canvases are broken, fix them
         self.__GLineEdit_392 = tk.Canvas(root)
-        self.__GLineEdit_392.place(x=50, y=130, width=230, height=150, bg='green')
+        self.__GLineEdit_392.place(x=50, y=130, width=230, height=150)
        
     
         self.__GLineEdit_517 = tk.Canvas(root)
