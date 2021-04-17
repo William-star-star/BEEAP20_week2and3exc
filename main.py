@@ -24,44 +24,56 @@ class App:
         root.resizable(width=False, height=False)
 
 # shows the label name for loading csv file
-        self.__GButton_450 = tk.Button(root)
-        self.__GButton_450["bg"] = "red"
-        ft = tkFont.Font(family='Times', size=10)
-        self.__GButton_450["font"] = ft
-        self.__GButton_450["fg"] = "#000000"
-        self.__GButton_450["justify"] = "center"
-        self.__GButton_450["text"] = "Load csv file"
-        self.__GButton_450.place(x=70, y=50, width=70, height=25)
-        self.__GButton_450["command"] = self.__GButton_450_command
-
-        self.__GListBox_563 = ttk.Combobox(root)
-        self.__GListBox_563.place(x=350, y=50, width=80, height=25)
-        self.__GListBox_563.bind("<<ComboboxSelected>>", self.__comboBoxCb)
-
-        self.__GLabel_544 = tk.Label(root)
-        ft = tkFont.Font(family='Times', size=10)
-        self.__GLabel_544["font"] = ft
-        self.__GLabel_544["fg"] = "#333333"
-        self.__GLabel_544["justify"] = "center"
-        self.__GLabel_544["text"] = "csv file name"
-        self.__GLabel_544.place(x=150, y=50, width=70, height=25)
         
-      
+        self.__loadButton = tk.Button(root)
+        self.__loadButton["bg"] = "white"
+        ft = tkFont.Font(family='Times', size=10)
+        self.__loadButton["font"] = ft
+        self.__loadButton["fg"] = "#000000"
+        self.__loadButton["justify"] = "center"
+        self.__loadButton["text"] = "Load csv file"
+        self.__loadButton.place(x=70, y=50, width=70, height=25)
+        self.__loadButton["command"] = self.__loadButton_command
+        self.combo_box = ttk.Combobox(root)
+        self.combo_box.place(x=350, y=50, width=80, height=25)
+        self.combo_box.bind("<<ComboboxSelected>>", self.__comboBoxCb)
+        
+  #shows the csv file name      
+        self.csv_file_name  = tk.Label(root)
+        ft = tkFont.Font(family='Times', size=10)
+        self.csv_file_name["font"] = ft
+        self.csv_file_name["fg"] = "#333333"
+        self.csv_file_name["justify"] = "center"
+        self.csv_file_name["text"] = "csv file name"
+        self.csv_file_name.place(x=150, y=50, width=70, height=25)
+        
+         #shows the selected community      
+        self.select_community = tk.Label(root)
+        ft = tkFont.Font(family='Times', size=10)
+        self.select_community["font"] = ft
+        self.select_community["fg"] = "#333333"
+        self.select_community["justify"] = "center"
+        self.select_community["text"] = "Select community"
+        self.select_community.place(x=250, y=50, width=100, height=25)
+        
         # these canvases are broken, fix them
-        self.__GLineEdit_517 = tk.Canvas(root)
-        self.__GLineEdit_517.place(x=50, y=130, width=234, height=140)
-
-        self.__GLineEdit_985 = tk.Canvas(root)
-        self.__GLineEdit_985.place(x=310, y=130, width=239, height=139)
-
         self.__GLineEdit_392 = tk.Canvas(root)
-        self.__GLineEdit_392.place(x=50, y=290, width=233, height=157)
+        self.__GLineEdit_392.place(x=50, y=130, width=230, height=150, bg='green')
+       
+    
+        self.__GLineEdit_517 = tk.Canvas(root)
+        self.__GLineEdit_517.place(x=50, y=310, width=230, height=150)
+       
+    
+        self.__GLineEdit_985 = tk.Canvas(root)
+        self.__GLineEdit_985.place(x=310, y=130, width=230, height=150)
 
+       
         self.__GLineEdit_700 = tk.Canvas(root)
-        self.__GLineEdit_700.place(x=310, y=290, width=234, height=158)
+        self.__GLineEdit_700.place(x=310, y=310, width=230, height=150)
         
        
-    def __GButton_450_command(self):
+    def __loadButton_command(self):
        
         filePath = fd.askopenfilename(initialdir='.')
         
@@ -69,7 +81,7 @@ class App:
            
             self.__df = pd.read_csv(filePath)
             self.__df = self.__df.dropna()
-            self.__GListBox_563['values'] = list(self.__df['COMMUNITY AREA NAME'].unique())
+            self.combo_box['values'] = list(self.__df['COMMUNITY AREA NAME'].unique())
         except:
             # quick and dirty, desired behavior would be to show a notification pop up that says
             # "nope!"
@@ -80,14 +92,18 @@ class App:
     # top right: bar chart, average THERM by month
     # bottom left and bottom right up to you
     def __comboBoxCb(self, event=None):
-        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == self.__GListBox_563.get()]
+        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == self.combo_box.get()]
         print(self.__subdf.head())
-        fig1 = Figure(figsize=(self.__GLineEdit_392.winfo_width, self.__GLineEdit_392.winfo_height), dpi=100)
+        fig1 = Figure(figsize=(230,150), dpi=100)
         ax1 = fig1.add_subplot(111)
-        self.__subdf.iloc[:, range(self.__subdf.columns.get_loc['KWH JANUARY 2010'], 12)].mean().plot.bar(ax=ax1)
+        self.__subdf.iloc[:, range(self.__subdf.columns.get_loc('KWH JANUARY 2010'), 12)].mean().plot.bar(ax=ax1)
+                                             
+        
+        
 
 
 if __name__ == "__main__":
     root = tk.Tk()
     app = App(root)
     root.mainloop()
+    plt.show() 
