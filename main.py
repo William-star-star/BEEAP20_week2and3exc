@@ -56,30 +56,31 @@ class App:
         self.select_community["text"] = "Select community"
         self.select_community.place(x=250, y=50, width=100, height=25)
         
-        # these canvases are broken, fix them
-        self.__GLineEdit_392 = tk.Canvas(root)
-        self.__GLineEdit_392.place(x=50, y=130, width=230, height=150)
+        # canvasses are fixed
+        #canvas for average KWH
+        self.AverageKWH = tk.Canvas(root)
+        self.AverageKWH.place(x=50, y=130, width=230, height=150)
        
-    
-        self.__GLineEdit_517 = tk.Canvas(root)
-        self.__GLineEdit_517.place(x=50, y=310, width=230, height=150)
+         #canvas for average THERM per month
+        self.AverageTHERM = tk.Canvas(root)
+        self.AverageTHERM.place(x=50, y=310, width=230, height=150)
        
-    
-        self.__GLineEdit_985 = tk.Canvas(root)
-        self.__GLineEdit_985.place(x=310, y=130, width=230, height=150)
+          #canvas for max KWH per month
+        self.MAXKWH = tk.Canvas(root)
+        self.MAXKWH.place(x=310, y=130, width=230, height=150)
 
-       
-        self.__GLineEdit_700 = tk.Canvas(root)
-        self.__GLineEdit_700.place(x=310, y=310, width=230, height=150)
+         #canvas for max THERM per month
+        self.MAXTHERM = tk.Canvas(root)
+        self.MAXTHERM.place(x=310, y=310, width=230, height=150)
         
        
     def __loadButton_command(self):
        
-        filePath = fd.askopenfilename(initialdir='.')
+        filePath = fd.askopenfilename(initialdir='.') #file path
         
         try:
            
-            self.__df = pd.read_csv(filePath)
+            self.__df = pd.read_csv(filePath) #opens the csv file
             self.__df = self.__df.dropna()
             self.combo_box['values'] = list(self.__df['COMMUNITY AREA NAME'].unique())
         except:
@@ -94,16 +95,49 @@ class App:
     def __comboBoxCb(self, event=None):
         self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == self.combo_box.get()]
         print(self.__subdf.head())
-        fig1 = Figure(figsize=(230,150), dpi=100)
-        ax1 = fig1.add_subplot(111)
-        self.__subdf.iloc[:, range(self.__subdf.columns.get_loc('KWH JANUARY 2010'), 12)].mean().plot.bar(ax=ax1)
+        
+        #plot the average KWH per month
+        fig1 = Figure(figsize=(self.AverageKWH.winfo_width(),self.AverageKWH.winfo_height()), dpi=100)
+        ax1 = fig1.add_subplot(221)
+        kwhJanIdx = self.__subdf.columns.get_loc('KWH JANUARY 2010')
+        self.__subdf.iloc[:, range(kwhJanIdx, kwhJanIdx+12)].mean().plot.bar(ax=ax1)
+        self.AverageKWH = FigureCanvasTkAgg(fig1, master = root)
+        self.AverageKWH.get_tk_widget().pack()
+        ax1.set_title("Average KWH per month")
+        
+        #plot the average THERM per month
+        ax2 = fig1.add_subplot(222)
+        thermJanIdx = self.__subdf.columns.get_loc('THERM JANUARY 2010')
+        self.__subdf.iloc[:, range(thermJanIdx, thermJanIdx+12)].mean().plot.bar(ax=ax2)
+        self.AveageTHERM = FigureCanvasTkAgg(fig1, master = root)
+        self.AveageTHERM.get_tk_widget().pack()
+        ax2.set_title("Average Therm per month")
+        
+        
+        #plot the max value of KWH per month
+        ax3 = fig1.add_subplot(223)
+        kwhJanIdx = self.__subdf.columns.get_loc('KWH JANUARY 2010')
+        self.__subdf.iloc[:, range(kwhJanIdx, kwhJanIdx+12)].max().plot.bar(ax=ax3)
+        self.MAXKWH = FigureCanvasTkAgg(fig1, master = root)
+        self.MAXKWH.get_tk_widget().pack()
+        ax1.set_title("Max KWH per month")
+        
+        #plot the max value of THERM per month
+        ax4 = fig1.add_subplot(224)
+        thermJanIdx = self.__subdf.columns.get_loc('THERM JANUARY 2010')
+        self.__subdf.iloc[:, range(thermJanIdx, thermJanIdx+12)].max().plot.bar(ax=ax4)
+        self.MAXTHERM = FigureCanvasTkAgg(fig1, master = root)
+        self.MAXTHERM.get_tk_widget().pack()
+        ax1.set_title(" Max Therm per month")
+    
+       
+   
                                              
         
         
-
-
 if __name__ == "__main__":
     root = tk.Tk()
     app = App(root)
+    
     root.mainloop()
-    plt.show() 
+     
